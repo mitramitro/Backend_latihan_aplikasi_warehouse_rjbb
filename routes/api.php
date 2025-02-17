@@ -25,13 +25,17 @@ Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('lo
  * route "/user"
  * @method "GET"
  */
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 
-Route::middleware('auth:api')->group(function () {
-    // Route::get('/phonebook', [PhonebookController::class, 'index']);
+// Route::middleware('auth:api')->group(function () {
+// Route::get('/phonebook', [PhonebookController::class, 'index']);
+// });
+
+Route::middleware(['jwt.auth'])->group(function () {
+    Route::post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');
 });
 
 Route::apiResource('devices', DevicesController::class);
@@ -47,4 +51,4 @@ Route::apiResource('sites', SitesController::class);
  * route "/logout"
  * @method "POST"
  */
-Route::post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');
+// Route::post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');

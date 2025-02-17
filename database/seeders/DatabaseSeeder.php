@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             ContractSeeder::class,
             SiteSeeder::class,
-            VendorSeeder::class
+            VendorSeeder::class,
+            UserSeeder::class
         ]);
     }
 }

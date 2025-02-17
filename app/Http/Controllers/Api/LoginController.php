@@ -9,40 +9,45 @@ use Illuminate\Support\Facades\Validator;
 class LoginController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Handle the login request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request)
     {
-        //set validation
+        // Validasi input
         $validator = Validator::make($request->all(), [
-            'email'     => 'required',
-            'password'  => 'required'
+            'username' => 'required|string|exists:users,username',
+            'password' => 'required|string|min:8',
         ]);
 
-        //if validation fails
+        // Jika validasi gagal
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
         }
 
-        //get credentials from request
-        $credentials = $request->only('email', 'password');
+        // Coba autentikasi user menggunakan JWT
+        $credentials = $request->only('username', 'password');
 
-        //if auth failed
         if (!$token = auth()->guard('api')->attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email atau Password Anda salah'
+                'message' => 'Username atau Password Anda salah'
             ], 401);
         }
 
-        //if auth success
+        // Jika autentikasi berhasil, ambil user yang login
         return response()->json([
-            'success' => true,
-            'user'    => auth()->guard('api')->user(),
-            'token'   => $token
+            'success'      => true,
+            'message'      => 'Login berhasil',
+            'user'         => auth()->guard('api')->user(),
+            'access_token' => $token,
+            'token_type'   => 'Bearer',
+
         ], 200);
     }
 }
