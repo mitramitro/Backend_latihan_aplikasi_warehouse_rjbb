@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Device;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class DevicesController extends Controller
 {
@@ -14,12 +15,40 @@ class DevicesController extends Controller
     public function index(Request $request)
     {
         $limit = $request->query('limit', 10); // Default 10 item per halaman
-        $devices = Device::paginate($limit);
+
+        $devices = Device::with(['userResponsible', 'userDevice'])->paginate($limit);
 
         return response()->json([
             'status' => 200,
             'message' => 'Success',
-            'data' => $devices->items(),
+            'data' => collect($devices->items())->map(function ($device) {
+                return [
+                    'id' => $device->id,
+                    'device_name' => $device->device_name,
+                    'brand_and_type' => $device->brand_and_type,
+                    'serial_number' => $device->serial_number,
+                    'device_type' => $device->device_type,
+                    'ip_address' => $device->ip_address,
+                    'tag_name' => $device->tag_name,
+                    'location' => $device->location,
+                    'contract_id' => $device->contract_id,
+                    'installation_year' => $device->installation_year,
+                    'description' => $device->description,
+                    'user_responsible' => $device->userResponsible ? [
+                        'id' => $device->userResponsible->id,
+                        'name' => $device->userResponsible->name,
+                        'position' => $device->userResponsible->position,
+                    ] : null,
+                    'user_device' => $device->userDevice ? [
+                        'id' => $device->userDevice->id,
+                        'name' => $device->userDevice->name,
+                        'position' => $device->userDevice->position,
+                    ] : null,
+                    'condition' => $device->condition,
+                    'created_at' => $device->created_at,
+                    'updated_at' => $device->updated_at,
+                ];
+            }),
             'pagination' => [
                 'currentPage' => $devices->currentPage(),
                 'totalPages' => $devices->lastPage(),
@@ -29,34 +58,50 @@ class DevicesController extends Controller
         ], Response::HTTP_OK);
     }
 
+
+
+
     /**
      * Simpan device baru ke database.
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'device_name' => 'required|string|max:255',
-            'brand_and_type' => 'required|string|max:255',
-            'serial_number' => 'required|string|max:255|unique:devices',
-            'device_type' => 'required|string|max:255',
-            'ip_address' => 'required|ip',
-            'tag_name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'contract_id' => 'required|exists:contracts,id',
-            'installation_year' => 'required|digits:4',
-            'description' => 'nullable|string',
-            'user_responsible' => 'required|string|max:255',
-            'user_device' => 'required|string|max:255',
-            'condition' => 'required|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'device_name' => 'required|string|max:255',
+                'brand_and_type' => 'required|string|max:255',
+                'serial_number' => 'required|string|max:255|unique:devices',
+                'device_type' => 'required|string|max:255',
+                'ip_address' => 'required|ip',
+                'tag_name' => 'required|string|max:255',
+                'location' => 'required|string|max:255',
+                'contract_id' => 'required|exists:contracts,id',
+                'installation_year' => 'required|digits:4',
+                'description' => 'nullable|string',
+                'user_responsible' => 'required|exists:employees,id',  // Ambil dari employees
+                'user_device' => 'required|exists:employees,id',       // Ambil dari employees
+                'condition' => 'required|string|max:255',
+            ]);
 
-        $device = Device::create($validated);
+            Log::info('Data sebelum insert:', $validated);
 
-        return response()->json([
-            'status' => 201,
-            'message' => 'Device created successfully',
-            'data' => $device
-        ], Response::HTTP_CREATED);
+            $device = Device::create($validated);
+
+            Log::info('Data berhasil disimpan:', $device->toArray());
+
+            return response()->json([
+                'status' => 201,
+                'message' => 'Device created successfully',
+                'data' => $device
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            Log::error('Error saat insert device: ' . $e->getMessage());
+
+            return response()->json([
+                'status' => 500,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

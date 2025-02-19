@@ -23,8 +23,8 @@ return new class extends Migration
             $table->foreignId('contract_id');
             $table->string('installation_year');
             $table->text('description');
-            $table->string('user_responsible');
-            $table->string('user_device');
+            $table->foreignId('user_responsible');
+            $table->foreignId('user_device');
             $table->string('condition');
             $table->timestamps();
         });
