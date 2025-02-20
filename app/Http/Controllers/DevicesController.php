@@ -72,10 +72,10 @@ class DevicesController extends Controller
                 'brand_and_type' => 'required|string|max:255',
                 'serial_number' => 'required|string|max:255|unique:devices',
                 'device_type' => 'required|string|max:255',
-                'ip_address' => 'required|ip',
+                'ip_address' => 'sometimes|nullable|ip',
                 'tag_name' => 'required|string|max:255',
                 'location' => 'required|string|max:255',
-                'contract_id' => 'required|exists:contracts,id',
+                'contract_id' => 'sometimes|nullable|exists:contracts,id',
                 'installation_year' => 'required|digits:4',
                 'description' => 'nullable|string',
                 'user_responsible' => 'required|exists:employees,id',  // Ambil dari employees
