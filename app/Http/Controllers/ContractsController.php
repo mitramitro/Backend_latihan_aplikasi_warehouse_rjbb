@@ -19,7 +19,7 @@ class ContractsController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => 'Succes',
+            'message' => 'Success',
             'data' => $contracts->items(),
             'pagination' => [
                 'currentPage' => $contracts->currentPage(),
