@@ -132,4 +132,41 @@ class DeviceGroupController extends Controller
             "data" => $uniqueDeviceGroups
         ], Response::HTTP_OK);
     }
+
+    //Jika ingin menggunakan query string /api/device_groups/types?device_group_name=CCTV
+    public function getDeviceTypesByDeviceGroupName(Request $request)
+    {
+        $request->validate([
+            'device_group_name' => 'required|string'
+        ]);
+
+        $deviceTypes = DeviceGroup::where('device_group_name', $request->device_group_name)
+            ->pluck('device_type');
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Success",
+            "data" => $deviceTypes
+        ], Response::HTTP_OK);
+    }
+    //Jika ingin menggunakan route dengan parameter path di url /api/device_groups/types/CCTV
+    //     public function getDeviceTypesByGroup($device_group_name)
+    // {
+    //     $deviceTypes = DeviceGroup::where('device_group_name', $device_group_name)
+    //         ->pluck('device_type');
+
+    //     if ($deviceTypes->isEmpty()) {
+    //         return response()->json([
+    //             "status" => 404,
+    //             "message" => "Device types not found for the given group",
+    //             "data" => []
+    //         ], Response::HTTP_NOT_FOUND);
+    //     }
+
+    //     return response()->json([
+    //         "status" => 200,
+    //         "message" => "Success",
+    //         "data" => $deviceTypes
+    //     ], Response::HTTP_OK);
+    // }
 }

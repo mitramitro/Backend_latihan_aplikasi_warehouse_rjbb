@@ -45,6 +45,8 @@ Route::apiResource('contracts', ContractsController::class);
 Route::apiResource('employees', EmployeesController::class);
 Route::apiResource('sites', SitesController::class);
 Route::get('device_groups/unique', [DeviceGroupController::class, 'uniqueDeviceGroups']); //letaknya harus diatas apiResource
+Route::get('device_groups/types', [DeviceGroupController::class, 'getDeviceTypesByDeviceGroupName']);
+
 Route::apiResource('device_groups', DeviceGroupController::class);
 
 
