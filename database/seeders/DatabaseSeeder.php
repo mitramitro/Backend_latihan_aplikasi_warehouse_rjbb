@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DeviceGroup;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,7 +22,8 @@ class DatabaseSeeder extends Seeder
             ContractSeeder::class,
             SiteSeeder::class,
             VendorSeeder::class,
-            UserSeeder::class
+            UserSeeder::class,
+            DeviceGroupSeeder::class
         ]);
     }
 }

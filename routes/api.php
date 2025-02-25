@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\DeviceGroupController;
 use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\SitesController;
@@ -43,6 +44,7 @@ Route::apiResource('vendors', VendorsController::class);
 Route::apiResource('contracts', ContractsController::class);
 Route::apiResource('employees', EmployeesController::class);
 Route::apiResource('sites', SitesController::class);
+Route::apiResource('device_groups', DeviceGroupController::class);
 
 
 
