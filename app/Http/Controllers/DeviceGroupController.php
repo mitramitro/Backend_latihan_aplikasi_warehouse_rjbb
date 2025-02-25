@@ -123,7 +123,7 @@ class DeviceGroupController extends Controller
     public function uniqueDeviceGroups()
     {
 
-        $devices = DeviceGroup::select('id', 'device_group_name')->distinct()->get();
+    $devices = DeviceGroup::select('id', 'device_group_name')->distinct()->get();
 
     return response()->json([
         "status" => 200,
