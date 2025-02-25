@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DeviceGroup;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -116,6 +117,17 @@ class DeviceGroupController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Device group deleted successfully'
+        ], Response::HTTP_OK);
+    }
+
+    public function uniqueDeviceGroups()
+    {
+
+        $uniqueDeviceGroups = DeviceGroup::select('device_group_name')->distinct()->get();
+        return response()->json([
+            "status" => 200,
+            "message" => "Success",
+            "data" => $uniqueDeviceGroups
         ], Response::HTTP_OK);
     }
 }
