@@ -125,11 +125,14 @@ class DeviceGroupController extends Controller
 
     $devices = DeviceGroup::select('id', 'device_group_name')->distinct()->get();
 
-    return response()->json([
-        "status" => 200,
-        "message" => "Success",
-        "data" => $devices
-    ], Response::HTTP_OK);
+    $uniqueDeviceGroups = DeviceGroup::select('device_group_name')
+    ->distinct()
+    ->pluck('device_group_name'); // Ambil sebagai array
+return response()->json([
+    "status" => 200,
+    "message" => "Success",
+    "data" => $uniqueDeviceGroups
+], Response::HTTP_OK);
     }
 
     //Jika ingin menggunakan query string /api/device_groups/types?device_group_name=CCTV
