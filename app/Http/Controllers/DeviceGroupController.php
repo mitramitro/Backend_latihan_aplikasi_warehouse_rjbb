@@ -123,7 +123,9 @@ class DeviceGroupController extends Controller
     public function uniqueDeviceGroups()
     {
 
-        $uniqueDeviceGroups = DeviceGroup::select('device_group_name')->distinct()->get();
+        $uniqueDeviceGroups = DeviceGroup::select('device_group_name')
+            ->distinct()
+            ->pluck('device_group_name'); // Ambil sebagai array
         return response()->json([
             "status" => 200,
             "message" => "Success",
