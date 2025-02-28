@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             SiteSeeder::class,
             VendorSeeder::class,
             UserSeeder::class,
-            DeviceGroupSeeder::class
+            DeviceGroupSeeder::class,
+            ReportsSeeder::class
         ]);
     }
 }

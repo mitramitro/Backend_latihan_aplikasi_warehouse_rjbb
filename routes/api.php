@@ -4,9 +4,12 @@ use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\DeviceGroupController;
 use App\Http\Controllers\DevicesController;
 use App\Http\Controllers\EmployeesController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportDeviceController;
 use App\Http\Controllers\SitesController;
 use App\Http\Controllers\VendorsController;
 use App\Models\Contracts;
+use App\Models\ReportDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +51,8 @@ Route::get('device_groups/unique', [DeviceGroupController::class, 'uniqueDeviceG
 Route::get('device_groups/types', [DeviceGroupController::class, 'getDeviceTypesByDeviceGroupName']);
 
 Route::apiResource('device_groups', DeviceGroupController::class);
+Route::apiResource('report', ReportController::class);
+Route::apiResource('report-devices', ReportDeviceController::class);
 
 
 
