@@ -52,7 +52,7 @@ Route::get('device_groups/types', [DeviceGroupController::class, 'getDeviceTypes
 
 Route::apiResource('device_groups', DeviceGroupController::class);
 Route::apiResource('report', ReportController::class);
-Route::apiResource('report-devices', ReportDeviceController::class);
+Route::get('/reportdevices/{report_id}', [ReportDeviceController::class, 'showByReport']);
 
 
 
