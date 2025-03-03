@@ -7,6 +7,7 @@ use Illuminate\Container\Attributes\Log;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
 class DeviceGroupController extends Controller
 {
     /**

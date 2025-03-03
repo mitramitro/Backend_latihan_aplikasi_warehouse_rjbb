@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reportdevices', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('report_id');
             $table->string('device_name');
             $table->string('device_type');
             $table->string('status_used_new');

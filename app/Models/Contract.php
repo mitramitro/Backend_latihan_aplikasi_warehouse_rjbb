@@ -16,4 +16,9 @@ class contract extends Model
         'contract_number',
         'invoice'
     ];
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class, 'contract_id');
+    }
 }

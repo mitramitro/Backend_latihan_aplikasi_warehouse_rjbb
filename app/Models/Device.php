@@ -38,6 +38,7 @@ class Device extends Model
         return $this->belongsTo(Contract::class, 'contract_id');
     }
 
+
     public function userResponsible()
     {
         return $this->belongsTo(Employee::class, 'user_responsible');
