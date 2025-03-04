@@ -18,7 +18,9 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         $limit = $request->query('limit', 10);
-        $reports = Report::paginate($limit);
+
+        // Tambahkan orderBy untuk memastikan data terbaru ada di halaman pertama
+        $reports = Report::orderBy('created_at', 'desc')->paginate($limit);
 
         return response()->json([
             'status' => 200,
@@ -32,6 +34,7 @@ class ReportController extends Controller
             ]
         ], Response::HTTP_OK);
     }
+
 
     /**
      * Simpan laporan baru ke database dan buat summary otomatis di ReportDevice.
@@ -178,7 +181,7 @@ class ReportController extends Controller
         foreach ($devices as $type => $deviceGroup) {
             foreach ($deviceGroup as $deviceName => $items) {
                 $kondisi_baik = $items->whereIn('condition', ['New', 'Used'])->count();
-                $kondisi_rusak = $items->whereIn('condition', ['Damage', 'Repair', 'Unused', 'Dump'])->count();
+                $kondisi_rusak = $items->whereIn('condition', ['Damage', 'Repair', 'Unused'])->count();
                 $status_sewa = $items->filter(fn($device) => $device->contract && $device->contract->contract_type === 'Kontrak')->count();
                 $status_aset = $items->filter(fn($device) => $device->contract && $device->contract->contract_type === 'Non Kontrak')->count();
 
