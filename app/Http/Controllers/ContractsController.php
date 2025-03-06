@@ -35,22 +35,32 @@ class ContractsController extends Controller
      */
     public function store(Request $request)
     {
+        // Validate based on status_contract
         $validated = $request->validate([
             'vendor_id' => 'required|exists:vendors,id',
             'status_contract' => 'required|string|max:50',
             'contract_type' => 'required|string|max:100',
-            'contract_number' => 'required|string|unique:contracts',
+            'contract_number' => $request->status_contract === 'Non Kontrak' 
+                ? 'nullable|string' // Allow null if 'Non Kontrak'
+                : 'required|string|unique:contracts', // Otherwise, it must be unique
             'invoice' => 'required|string|max:50'
         ]);
-
+    
+        // Replace contract_number with '__' if it's empty and status is 'Non Kontrak'
+        if ($request->status_contract === 'Non Kontrak' && empty($validated['contract_number'])) {
+            $validated['contract_number'] = '__';
+        }
+    
+        // Create the contract
         $contract = Contract::create($validated);
-
+    
         return response()->json([
             'status' => 201,
             'message' => 'Contract created successfully',
             'data' => $contract
         ], Response::HTTP_CREATED);
     }
+    
 
     /**
      * Tampilkan detail satu kontrak.
@@ -79,31 +89,40 @@ class ContractsController extends Controller
     public function update(Request $request, $id)
     {
         $contract = Contract::find($id);
-
+    
         if (!$contract) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Contract not found'
             ], Response::HTTP_NOT_FOUND);
         }
-
+    
+        // Validate based on status_contract
         $validated = $request->validate([
             'vendor_id' => 'sometimes|exists:vendors,id',
             'status_contract' => 'sometimes|string|max:50',
             'contract_type' => 'sometimes|string|max:100',
-            'contract_number' => 'sometimes|string|unique:contracts,contract_number,' . $id,
+            'contract_number' => $request->status_contract === 'Non Kontrak' 
+                ? 'nullable|string'  // Allow null if 'Non Kontrak'
+                : 'sometimes|string|unique:contracts,contract_number,' . $id, // Ignore current contract for uniqueness check
             'invoice' => 'sometimes|string|max:50'
         ]);
-
+    
+        // Replace contract_number with '__' if it's empty and status is 'Non Kontrak'
+        if ($request->status_contract === 'Non Kontrak' && empty($validated['contract_number'])) {
+            $validated['contract_number'] = '__';
+        }
+    
+        // Update the contract
         $contract->update($validated);
-
+    
         return response()->json([
             'status' => 200,
             'message' => 'Contract updated successfully',
             'data' => $contract
         ], Response::HTTP_OK);
     }
-
+    
     /**
      * Hapus kontrak berdasarkan ID.
      */
